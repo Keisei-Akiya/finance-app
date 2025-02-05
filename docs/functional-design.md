@@ -101,3 +101,7 @@
    ※ $r_f$ には無担保コール翌日物を使用したいが，API が見つからないので今回は 0．
 
 5. ポートフォリオの評価結果を返す．
+
+## 参考文献
+
+[Mathematical Finance](!http://mathfin.web.fc2.com/finan/imi_finan10.html)

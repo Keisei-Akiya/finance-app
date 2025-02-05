@@ -16,9 +16,9 @@
 
 ## 画面レイアウト
 
-![alt text](../img/mock_with_comments.png)
+![alt text](../img/mock.png)
 
-Analyze portfolios ボタンと結果の間にエラーメッセージを表示する。
+分析するボタンと結果の間にエラーメッセージを表示する。
 
 ## 画面項目定義
 
