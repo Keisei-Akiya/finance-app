@@ -23,7 +23,7 @@
 5. PostgreSQL に格納．
 6. 日本の株価データと配当データをダウンロード．
 
-## Lambda 2 リターンを計算して DB に登録
+## Lambda 2 portforio の評価
 
 ### 機能概要
 
