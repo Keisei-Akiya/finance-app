@@ -5,10 +5,61 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "mypy>=1.15.0",
     "numpy>=2.2.3",
     "polars>=1.22.0",
-    "ruff>=0.9.7",
     "streamlit>=1.42.2",
     "yfinance>=0.2.54",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "ruff>=0.9.7",
+    "types-requests>=2.32.0.20241016",
+]
+
+[tool.mypy]
+# 基本設定
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+
+# third-party ライブラリの型情報を使う
+ignore_missing_imports = true
+
+[tool.ruff]
+exclude = [
+    ".venv",
+    ".ruff_cache",
+]
+line-length = 120
+indent-width = 4
+target-version = "py313"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    'F', # Flake8
+    'B', # Black
+    'I', # isort
+    'E', # Error
+    'W', # Warning
+]
+ignore = []
+fixable = []
+unfixable = []
+pydocstyle.convention = 'google'
+
+[tool.ruff.lint.pylint]
+max-args = 6
