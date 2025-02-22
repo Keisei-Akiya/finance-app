@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title('Hello World')
+st.title("Hello World")
 
 # Create input fields
 col_ticker, col_weight_1, col_weight_2, col_weight_3 = st.columns(4)  # 4列のコンテナを用意する
