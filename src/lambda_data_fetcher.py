@@ -12,11 +12,14 @@ historical_data = yf_tickers.history(period="max")
 # 終値をpolarsのDataFrameに変換
 df_close = pl.DataFrame(historical_data["Close"])
 
-# polars.exprを使って為替レートを掛け算
-# 例えば、VOOの終値にJPY/USDの為替レートを掛け算して、JPYでの終値を計算する
-# ただし、JPY=Xの場合は為替レートを掛け算しない
+# 円換算の終値を追加
 expr_list = [
-    ((pl.col(f"{ticker}")) * pl.col("JPY=X")).alias(f"{ticker}_JPY") if ticker != "JPY=X" else pl.col(f"{ticker}")
+    # 終値に為替レートを掛け算
+    ((pl.col(f"{ticker}")) * pl.col("JPY=X")).alias(f"{ticker}_JPY")
+    # JPY=Xの場合はそのままの終値を使う
+    if ticker != "JPY=X"
+    else pl.col(f"{ticker}")
+    # ティッカーシンボルのリストを使ってループ
     for ticker in tickers
 ]
 
