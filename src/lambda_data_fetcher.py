@@ -52,7 +52,7 @@ df_close_long = (
 # 円建て換算
 df_close_long = (
     df_close_long
-    # 為替レートを結合
+    # 計算のため一旦，為替レートを結合
     .join(df_exchange_rate, on=["date"], how="left")
     # 円建ての終値を計算
     .with_columns((pl.col("value") * pl.col("JPY=X")).alias("value_jpy"))
@@ -88,7 +88,7 @@ df_dividends_long = (
 # 円建て換算
 df_dividends_long = (
     df_dividends_long
-    # 為替レートを結合
+    # 計算のため一旦，為替レートを結合
     .join(df_exchange_rate, on=["date"], how="left")
     # 円建ての配当を計算
     .with_columns((pl.col("dividends") * pl.col("JPY=X")).alias("dividends_jpy"))
