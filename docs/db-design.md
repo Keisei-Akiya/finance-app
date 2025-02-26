@@ -17,31 +17,32 @@
 
 | No. | カラム名        | 型          | 制約        | 備考                                                 |
 | --- | --------------- | ----------- | ----------- | ---------------------------------------------------- |
-| 1   | investment_id   | serial      | PRIMARY KEY | 投資銘柄 ID                                          |
+| 1   | investment_code | serial      | PRIMARY KEY | 投資銘柄 ID                                          |
 | 2   | ticker          | varchar(7)  | NOT NULL    | `yfinance` 用のティッカー                            |
 | 3   | investment_name | varchar(50) | NOT NULL    | 名前                                                 |
 | 4   | start_date      | date        | NOT NULL    | 運用開始日                                           |
-| 5   | asset_class_id  | serial      | NOT NULL    | 資産クラス<br>例: 株式，債券，複合                   |
-| 6   | country_id      | char(2)     | NOT NULL    | 2 文字の国コード<br>ISO 3166-1 alpha-2<br>例: JP，US |
-| 7   | currency_id     | char(3)     | FOREIGN KEY | 3 文字の通貨コード (ISO 4217)                        |
+| 5   | asset_class     | serial      | NOT NULL    | 資産クラス<br>例: 株式，債券，複合                   |
+| 6   | country_code    | char(2)     | NOT NULL    | 2 文字の国コード<br>ISO 3166-1 alpha-2<br>例: JP，US |
 
 ## 価格履歴テーブル
 
-| No. | カラム名      | 型            | 制約        | 備考                                                      |
-| --- | ------------- | ------------- | ----------- | --------------------------------------------------------- |
-| 1   | investment_id | serial        | PRIMARY KEY | 投資銘柄 ID                                               |
-| 2   | date          | date          | NOT NULL    | 日付                                                      |
-| 3   | price_local   | numeric[8, 2] | NOT NULL    | 現地通貨建て価格<br>精度 8<br>スケール 2<br>最大 99999.99 |
-| 4   | price_jpy     | numeric[8, 2] | NOT NULL    | 日本円建て価格<br>精度 8<br>スケール 2<br>最大 99999.99   |
+| No. | カラム名           | 型             | 制約        | 備考                                                      |
+| --- | ------------------ | -------------- | ----------- | --------------------------------------------------------- |
+| 1   | price_history_code | serial         | PRIMARY KEY | 価格履歴 ID                                               |
+| 2   | investment_code    | serial         | FOREIGN KEY | 投資銘柄 ID                                               |
+| 3   | date               | date           | NOT NULL    | 日付                                                      |
+| 4   | price_local        | numeric[8, 2]  | NOT NULL    | 現地通貨建て価格<br>精度 8<br>スケール 2<br>最大 99999.99 |
+| 5   | price_jpy          | numeric[10, 2] | NOT NULL    | 日本円建て価格<br>精度 8<br>スケール 2<br>最大 99999.99   |
 
 ## 配当履歴テーブル
 
-| No. | カラム名       | 型            | 制約        | 備考                                                                    |
-| --- | -------------- | ------------- | ----------- | ----------------------------------------------------------------------- |
-| 1   | investment_id  | serial        | PRIMARY KEY | 投資銘柄 ID                                                             |
-| 2   | date           | date          | NOT NULL    | 日付                                                                    |
-| 3   | dividend_local | numeric[7, 2] | NOT NULL    | 現地通貨建て 1 株当たり配当金額<br>精度 7<br>スケール 2<br>最大 9999.99 |
-| 4   | dividend_jpy   | numeric[7, 2] | NOT NULL    | 日本円建て 1 株当たり配当金額<br>精度 7<br>スケール 2<br>最大 9999.99   |
+| No. | カラム名              | 型            | 制約        | 備考                                                                    |
+| --- | --------------------- | ------------- | ----------- | ----------------------------------------------------------------------- |
+| 1   | dividend_history_code | serial        | PRIMARY KEY | 配当履歴 ID                                                             |
+| 2   | investment_id         | serial        | FOREIGN KEY | 投資銘柄 ID                                                             |
+| 3   | date                  | date          | NOT NULL    | 日付                                                                    |
+| 4   | dividend_local        | numeric[7, 2] | NOT NULL    | 現地通貨建て 1 株当たり配当金額<br>精度 7<br>スケール 2<br>最大 9999.99 |
+| 5   | dividend_jpy          | numeric[9, 2] | NOT NULL    | 日本円建て 1 株当たり配当金額<br>精度 7<br>スケール 2<br>最大 9999.99   |
 
 ## 為替レートテーブル
 
@@ -49,9 +50,9 @@
 
 | No. | カラム名      | 型            | 制約        | 備考                                                                             |
 | --- | ------------- | ------------- | ----------- | -------------------------------------------------------------------------------- |
-| 1   | currency_id   | char(3)       | PRIMARY KEY | 3 文字の通貨コード (ISO 4217)<br>例: JPY，USD                                    |
+| 1   | currency_code | char(3)       | PRIMARY KEY | 3 文字の通貨コード (ISO 4217)<br>例: JPY，USD                                    |
 | 2   | date          | date          | NOT NULL    | 日付                                                                             |
-| 3   | exchange_rate | numeric[6, 2] | NOT NULL    | 1 相手通貨当たり日本円<br>精度 6<br>スケール 2<br>最大 999.99<br>※JPY なら全て 1 |
+| 3   | exchange_rate | numeric(6, 2) |             | 1 相手通貨当たり日本円<br>精度 6<br>スケール 2<br>最大 999.99<br>※JPY なら全て 1 |
 
 ## 参考文献
 

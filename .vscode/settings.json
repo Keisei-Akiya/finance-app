@@ -4,9 +4,11 @@
     "IAGG",
     "mypy",
     "pmatrix",
+    "psycopg2",
     "pydocstyle",
     "pylint",
     "Streamlit",
+    "unpivot",
     "VARCHAR",
     "venv"
   ],
