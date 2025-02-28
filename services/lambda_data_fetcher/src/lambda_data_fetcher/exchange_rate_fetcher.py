@@ -1,12 +1,13 @@
+import pandas as pd
 import polars as pl
 import yfinance as yf
 
 
-def exchange_rate_fetcher():
+def exchange_rate_fetcher() -> pl.DataFrame:
     # 為替レートを取得
     try:
-        exchange_rate = yf.Ticker("JPY=X").history(period="1d")
-        df_exchange_rate = (
+        exchange_rate: pd.DataFrame = yf.Ticker("JPY=X").history(period="1d")
+        df_exchange_rate: pl.DataFrame = (
             # 為替レートをpolarsのDataFrameに変換
             pl.DataFrame(
                 {
@@ -23,12 +24,7 @@ def exchange_rate_fetcher():
         # df_date_range = pl.DataFrame({"date": date_range})
         # df_exchange_rate = df_date_range.join(df_exchange_rate, on="date", how="left")
 
-        # 欠損値の補完
-        df_exchange_rate = (
-            df_exchange_rate
-            # 前日の値で欠損値を埋める
-            .fill_null(strategy="forward")
-        )
+        # TODO 欠損値の補完
 
         print("為替レートの取得に成功しました")
         return df_exchange_rate

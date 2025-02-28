@@ -1,0 +1,11 @@
+{
+  "cSpell.words": [
+    "dotenv",
+    "mypy",
+    "psycopg2",
+    "pyarrow",
+    "pylint",
+    "unpivot",
+    "venv"
+  ]
+}

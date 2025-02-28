@@ -1,5 +1,5 @@
 def main():
-    print("Hello from finance-app!")
+    print("Hello from lambda-caluculator!")
 
 
 if __name__ == "__main__":

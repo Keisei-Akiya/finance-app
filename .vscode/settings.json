@@ -1,10 +1,12 @@
 {
   "cSpell.words": [
     "CAGR",
+    "dotenv",
     "IAGG",
     "mypy",
     "pmatrix",
     "psycopg2",
+    "pyarrow",
     "pydocstyle",
     "pylint",
     "Streamlit",

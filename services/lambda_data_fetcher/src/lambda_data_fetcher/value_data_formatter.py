@@ -2,14 +2,25 @@ import polars as pl
 
 
 def value_data_formatter(
-    historical_data: pl.DataFrame = None,
-    df_date: pl.DataFrame = None,
-    df_exchange_rate: pl.DataFrame = None,
-    tickers: list = None,
-):
+    historical_data: pl.DataFrame,
+    df_date: pl.DataFrame,
+    df_exchange_rate: pl.DataFrame,
+    tickers: list[str],
+) -> pl.DataFrame:
+    """_summary_
+
+    Args:
+        historical_data (pl.DataFrame, optional): _description_. Defaults to None.
+        df_date (pl.DataFrame, optional): _description_. Defaults to None.
+        df_exchange_rate (pl.DataFrame, optional): _description_. Defaults to None.
+        tickers (list, optional): _description_. Defaults to None.
+
+    Returns:
+        pl.DataFrame: _description_
+    """
     try:
         # 終値をpolarsのDataFrameに変換
-        df_value_pivot = (
+        df_value_pivot: pl.DataFrame = (
             # 終値をpolarsのDataFrameに変換
             pl.DataFrame(historical_data["Close"])
             # 日付を追加
@@ -17,7 +28,7 @@ def value_data_formatter(
         )
 
         # データを長い形式に変換
-        df_value = (
+        df_value_long: pl.DataFrame = (
             df_value_pivot
             # ワイド形式から長い形式に変換
             .unpivot(
@@ -31,8 +42,8 @@ def value_data_formatter(
         )
 
         # 円建て換算値を追加
-        df_value = (
-            df_value
+        df_value: pl.DataFrame = (
+            df_value_long
             # 計算のため一旦，為替レートを結合
             .join(df_exchange_rate, on=["date"], how="left")
             # 円建ての終値を計算
