@@ -59,6 +59,7 @@ select = [
     'E', # Error
     'W', # Warning
 ]
+extend-select = ["I"]
 ignore = []
 fixable = []
 unfixable = []
