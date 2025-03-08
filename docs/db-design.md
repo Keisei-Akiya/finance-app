@@ -17,9 +17,9 @@
 | No. | カラム名        | 型           | 制約                    | 備考                                                 |
 | --- | --------------- | ------------ | ----------------------- | ---------------------------------------------------- |
 | 1   | investment_code | UUID         | PRIMARY KEY<br>NOT NULL | 投資銘柄 ID                                          |
-| 2   | ticker          | varchar(255) | NOT NULL                | `yfinance` 用のティッカー                            |
+| 2   | ticker_symbol   | varchar(255) | NOT NULL                | `yfinance` 用のティッカー                            |
 | 3   | investment_name | varchar(255) | NOT NULL                | 名前                                                 |
-| 4   | start_date      | date         | NOT NULL                | 運用開始日                                           |
+| 4   | inception_date  | date         | NOT NULL                | 運用開始日                                           |
 | 5   | asset_class     | varchar(255) |                         | 資産クラス<br>例: 株式，債券，複合                   |
 | 6   | country_code    | char(2)      | NOT NULL                | 2 文字の国コード<br>ISO 3166-1 alpha-2<br>例: JP，US |
 
