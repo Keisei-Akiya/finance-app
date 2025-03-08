@@ -1,21 +1,15 @@
-import os
-
 import polars as pl
-from dotenv import load_dotenv
 
 
-def investment_info_fetcher() -> pl.DataFrame:
+def investment_info_fetcher(
+    DB_HOST: str | None,
+    DB_PORT: str | None,
+    DB_USER: str | None,
+    DB_PASSWORD: str | None,
+    DB_NAME: str | None
+
+) -> pl.DataFrame:
     try:
-        # 環境変数を読み込む
-        load_dotenv()
-
-        # 環境変数からPostgreSQLの接続情報を取得
-        DB_HOST: str | None = os.getenv("DB_HOST")
-        DB_PORT: str | None = os.getenv("DB_PORT")
-        DB_NAME: str | None = os.getenv("DB_NAME")
-        DB_USER: str | None = os.getenv("DB_USER")
-        DB_PASSWORD: str | None = os.getenv("DB_PASSWORD")
-
         # polars
         uri = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
         # query = "SELECT investment_code, ticker_symbol, country_code FROM public.investment_info"
