@@ -1,22 +1,24 @@
 [project]
-name = "finance-app"
+name = "lambda_data_fetcher"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "jupyter>=1.1.1",
-    "numpy>=2.2.3",
+    "connectorx>=0.4.2",
+    "pandas>=2.2.3",
     "polars>=1.22.0",
-    "psycopg2>=2.9.10",
     "psycopg2-binary>=2.9.10",
     "pyarrow>=19.0.1",
     "python-dotenv>=1.0.1",
+    "sqlalchemy>=2.0.38",
     "yfinance>=0.2.54",
 ]
 
 [dependency-groups]
 dev = [
+    "fastexcel>=0.13.0",
+    "jupyter>=1.1.1",
     "mypy>=1.15.0",
     "ruff>=0.9.7",
     "types-requests>=2.32.0.20241016",

@@ -34,7 +34,7 @@ def dividend_data_formatter(
         )
 
         # ティッカーシンボルのリスト
-        ticker_symbol_list: list[str] = df_investment_info.select(pl.col('ticker_symbol')).to_numpy().flatten().tolist()
+        ticker_symbol_list: list[str] = df_investment_info.select(pl.col("ticker_symbol")).to_numpy().flatten().tolist()
 
         # データを長い形式に変換
         df_dividends_long: pl.DataFrame = (
@@ -45,10 +45,11 @@ def dividend_data_formatter(
                 index=["date"],
                 # 変換するカラム
                 on=[
-                    ticker_symbol for ticker_symbol in ticker_symbol_list
+                    ticker_symbol
+                    for ticker_symbol in ticker_symbol_list
                     # pivotのDataFrameにティッカーシンボルが含まれている場合のみ変換
                     if ticker_symbol in df_dividends_pivot.columns
-                ]
+                ],
             )
             .rename({"variable": "ticker_symbol", "value": "dividends"})
             .drop_nulls()
@@ -69,7 +70,7 @@ def dividend_data_formatter(
                 # TODO 日本かどうかの判定を追加
                 pl.when(pl.col("country_code") == "US")
                 .then(pl.col("dividends") * pl.col("JPY=X"))
-                .otherwise(pl.col("dividends")) # 日本はそのまま
+                .otherwise(pl.col("dividends"))  # 日本はそのまま
                 .alias("dividends_jpy")
             )
             # 外部キー，日付，配当，円建て配当のみを残す

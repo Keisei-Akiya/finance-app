@@ -2,11 +2,7 @@ import polars as pl
 
 
 def value_data_duplicate_dropper(
-    DB_HOST: str | None,
-    DB_PORT: str | None,
-    DB_USER: str | None,
-    DB_PASSWORD: str | None,
-    DB_NAME: str | None
+    DB_HOST: str | None, DB_PORT: str | None, DB_USER: str | None, DB_PASSWORD: str | None, DB_NAME: str | None
 ) -> None:
     try:
         # polars
@@ -19,8 +15,10 @@ def value_data_duplicate_dropper(
 
         # 重複がある場合
         if n_duplicate != 0:
-
-            df_value_drop_duplicate = df_value.unique()
+            df_value_drop_duplicate = df_value.unique(
+                # この列だけを見れば一意に定まる．
+                subset=["investment_code", "date"]
+            )
 
             df_value_drop_duplicate.write_database(
                 table_name="value_history",
@@ -28,10 +26,10 @@ def value_data_duplicate_dropper(
                 if_table_exists="replace",
                 engine="sqlalchemy",
             )
-            print("価格データから重複を除きました。")
+            print("価格データから重複を除きました")
 
         else:
-            print('価格データには重複はありませんでした。')
+            print("価格データには重複はありませんでした")
 
     except Exception as e:
         print(f"Error: {e}")

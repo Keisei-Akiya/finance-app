@@ -36,7 +36,7 @@ def value_data_formatter(
         )
 
         # ティッカーシンボルのリスト
-        ticker_symbol_list: list[str] = df_investment_info.select(pl.col('ticker_symbol')).to_numpy().flatten().tolist()
+        ticker_symbol_list: list[str] = df_investment_info.select(pl.col("ticker_symbol")).to_numpy().flatten().tolist()
 
         # データを長い形式に変換
         df_value_long: pl.DataFrame = (
@@ -47,7 +47,8 @@ def value_data_formatter(
                 index=["date"],
                 # 変換するカラム
                 on=[
-                    ticker_symbol for ticker_symbol in ticker_symbol_list
+                    ticker_symbol
+                    for ticker_symbol in ticker_symbol_list
                     # pivotのDataFrameにティッカーシンボルが含まれている場合のみ変換
                     if ticker_symbol in df_value_pivot.columns
                 ],
@@ -67,16 +68,11 @@ def value_data_formatter(
             .with_columns(
                 pl.when(pl.col("country_code") == "US")
                 .then(pl.col("value") * pl.col("JPY=X"))
-                .otherwise(pl.col("value")) # 日本はそのまま
+                .otherwise(pl.col("value"))  # 日本はそのまま
                 .alias("value_jpy")
             )
             # 外部キーと日付，価格，円建て価格のみを残す
-            .select(
-                "investment_code",
-                "date",
-                "value",
-                "value_jpy"
-            )
+            .select("investment_code", "date", "value", "value_jpy")
         )
 
         return df_value
