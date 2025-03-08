@@ -20,12 +20,11 @@ def lambda_handler() -> None:
         # ticker_symbol_list: list[str]
         # investment_code_list, ticker_symbol_list = investment_code_and_ticker_symbol_fetcher()
         df_investment_info: pl.DataFrame = investment_info_fetcher()
-        print(df_investment_info.head())
 
         # 投資銘柄のヒストリカルデータを取得
         historical_data: pl.DataFrame
         df_date: pl.DataFrame
-        historical_data, df_date = historical_data_fetcher(ticker_list=ticker_symbol_list)
+        historical_data, df_date = historical_data_fetcher(df_investment_info=df_investment_info)
 
         # 価格履歴データを整える
         df_value: pl.DataFrame = value_data_formatter(
