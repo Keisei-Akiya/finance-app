@@ -5,7 +5,8 @@ def value_data_formatter(
     historical_data: pl.DataFrame,
     df_date: pl.DataFrame,
     df_exchange_rate: pl.DataFrame,
-    tickers: list[str],
+    investment_code_list: list[str],
+    ticker_symbol_list: list[str],
 ) -> pl.DataFrame:
     """_summary_
 
@@ -35,14 +36,18 @@ def value_data_formatter(
                 # 残すカラム
                 index=["date"],
                 # 変換するカラム
-                on=[ticker for ticker in tickers],
+                on=[
+                    ticker_symbol for ticker_symbol in ticker_symbol_list
+                    # pivotのDataFrameにティッカーシンボルが含まれている場合のみ変換
+                    if ticker_symbol in df_value_pivot.columns
+                ],
             )
-            .rename({"variable": "ticker", "value": "value"})
+            .rename({"variable": "ticker_symbol", "value": "value"})
             .drop_nulls()
         )
 
         # 円建て換算値を追加
-        df_value: pl.DataFrame = (
+        df_value_contains_jpy: pl.DataFrame = (
             df_value_long
             # 計算のため一旦，為替レートを結合
             .join(df_exchange_rate, on=["date"], how="left")
@@ -51,6 +56,22 @@ def value_data_formatter(
             # JPY=Xの列を削除
             .drop("JPY=X")
         )
+
+        # ティッカーシンボルを投資コードに変換
+        symbol_and_code_dict: dict[str, str] = {
+            ticker_symbol_list[i]: investment_code_list[i] for i in range(len(ticker_symbol_list))
+        }
+        df_value = (
+            df_value_contains_jpy
+            .with_columns(
+                pl.when(pl.col('ticker_symbol').is_in(ticker_symbol_list))
+                # 辞書に従って置き換える
+                .then(pl.col('ticker_symbol').replace(symbol_and_code_dict, default=None))
+                .alias('investment_code')
+            )
+            .drop('ticker_symbol')
+        )
+
         return df_value
 
     except Exception as e:
