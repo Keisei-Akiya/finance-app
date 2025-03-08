@@ -13,6 +13,7 @@ def historical_data_fetcher(df_investment_info: pl.DataFrame) -> tuple[pl.DataFr
         historical_data: pd.DataFrame = yf_tickers.history(period="1d")
 
         # 日付をpolarsのDataFrameに変換
+        # 2つの戻り値があるのは，仕方ない．
         df_date: pl.DataFrame = (
             pl.DataFrame(historical_data.index.to_numpy())
             .rename({"column_0": "date"})

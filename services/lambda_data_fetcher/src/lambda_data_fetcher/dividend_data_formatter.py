@@ -5,8 +5,7 @@ def dividend_data_formatter(
     historical_data: pl.DataFrame,
     df_date: pl.DataFrame,
     df_exchange_rate: pl.DataFrame,
-    investment_code_list: list[str],
-    ticker_symbol_list: list[str]
+    df_investment_info: pl.DataFrame,
 ) -> pl.DataFrame:
     """
     配当データを整形する関数
@@ -19,7 +18,7 @@ def dividend_data_formatter(
 
     df_exchange_rate : pl.DataFrame
 
-    tickers : list[str]
+    df_investment_info : pl.DataFrame
 
     Returns
     -------
@@ -33,6 +32,9 @@ def dividend_data_formatter(
             # 日付を追加
             .with_columns(df_date)
         )
+
+        # ティッカーシンボルのリスト
+        ticker_symbol_list: list[str] = df_investment_info.select(pl.col('ticker_symbol')).to_numpy().flatten().tolist()
 
         # データを長い形式に変換
         df_dividends_long: pl.DataFrame = (
@@ -55,33 +57,23 @@ def dividend_data_formatter(
         # 配当がある場合のみ抽出
         df_dividends_not_null: pl.DataFrame = df_dividends_long.filter(pl.col("dividends") > 0)
 
-        # 円建て換算値を追加
-        df_dividends_contains_jpy: pl.DataFrame = (
+        # 円建ての配当を計算
+        df_dividends: pl.DataFrame = (
             df_dividends_not_null
+            # 投資情報を結合
+            .join(df_investment_info, on=["ticker_symbol"], how="left")
             # 計算のため一旦，為替レートを結合
             .join(df_exchange_rate, on=["date"], how="left")
             # 円建ての配当を計算
             .with_columns(
                 # TODO 日本かどうかの判定を追加
-                (pl.col("dividends") * pl.col("JPY=X")).alias("dividends_jpy")
+                pl.when(pl.col("country_code") == "US")
+                .then(pl.col("dividends") * pl.col("JPY=X"))
+                .otherwise(pl.col("dividends")) # 日本はそのまま
+                .alias("dividends_jpy")
             )
-            # 為替レート `JPY=X` を削除
-            .drop("JPY=X")
-        )
-
-        # ティッカーシンボルを投資コードに変換
-        symbol_and_code_dict: dict[str, str] = {
-            ticker_symbol_list[i]: investment_code_list[i] for i in range(len(ticker_symbol_list))
-        }
-        df_dividends = (
-            df_dividends_contains_jpy
-            .with_columns(
-                pl.when(pl.col('ticker_symbol').is_in(ticker_symbol_list))
-                # 辞書に従って置き換える
-                .then(pl.col('ticker_symbol').replace(symbol_and_code_dict, default=None))
-                .alias("investment_code")
-            )
-            .drop("ticker_symbol")
+            # 外部キー，日付，配当，円建て配当のみを残す
+            .select("investment_code", "date", "dividends", "dividends_jpy")
         )
 
         return df_dividends
