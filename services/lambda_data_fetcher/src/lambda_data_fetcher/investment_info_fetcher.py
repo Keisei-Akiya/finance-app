@@ -7,7 +7,11 @@ def investment_info_fetcher(
     try:
         # polars
         uri = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        query = "SELECT investment_code, ticker_symbol, country_code FROM public.investment_info"
+        # query = "SELECT investment_code, ticker_symbol, country_code FROM public.investment_info"
+        # ランダム
+        query = (
+            "SELECT investment_code, ticker_symbol, country_code FROM public.investment_info ORDER BY RANDOM() LIMIT 10"
+        )
         df_investment_info: pl.DataFrame = pl.read_database_uri(query=query, uri=uri)
 
         return df_investment_info

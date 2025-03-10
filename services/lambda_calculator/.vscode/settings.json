@@ -1,5 +1,15 @@
 {
-  "cSpell.words": ["cagr", "mypy", "psycopg", "pylint", "venv"],
+  "cSpell.words": [
+    "backtesting",
+    "cagr",
+    "connectorx",
+    "dotenv",
+    "mypy",
+    "pkey",
+    "psycopg",
+    "pylint",
+    "venv"
+  ],
   "[python]": {
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {

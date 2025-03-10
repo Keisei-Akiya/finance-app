@@ -1,5 +1,44 @@
+import os
+
+import polars as pl
+
+# from dividend_fetcher import dividend_fetcher
+from dotenv import load_dotenv
+from investment_info_fetcher import investment_info_fetcher
+from ticker_filter import ticker_filter
+from value_fetcher import value_fetcher
+
+
 def lambda_handler() -> dict:
     try:
+        # データベース接続情報
+        load_dotenv()
+        DB_HOST: str | None = os.getenv("DB_HOST")
+        DB_PORT: str | None = os.getenv("DB_PORT")
+        DB_USER: str | None = os.getenv("DB_USER")
+        DB_PASSWORD: str | None = os.getenv("DB_PASSWORD")
+        DB_NAME: str | None = os.getenv("DB_NAME")
+
+        # ティッカーシンボルを取得
+        ticker_symbol_list = ["VTI", "VGK", "VPL", "1490.T"]
+        # `investment_info` テーブルを取得
+        df_investment_info: pl.DataFrame = investment_info_fetcher(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        print(df_investment_info.head())
+        # 投資対象銘柄のコードを取得
+        df_investment = ticker_filter(df_investment_info, ticker_symbol_list)
+        print(df_investment)
+
+        # 投資対象のデータを取得
+        df_value = value_fetcher(df_investment, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        print(df_value)
+
+        # df_dividend = dividend_fetcher(df_investment, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        # print(df_dividend.head())
+
+        # 重みを取得する
+        # weight_list = [0.25, 0.25, 0.25, 0.25]
+        #
+
         cagr = 0.1
         volatility = 0.2
         sharpe_ratio = cagr / volatility
