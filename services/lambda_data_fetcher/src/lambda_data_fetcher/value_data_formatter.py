@@ -2,8 +2,7 @@ import polars as pl
 
 
 def value_data_formatter(
-    historical_data: pl.DataFrame,
-    df_date: pl.DataFrame,
+    df_value_pivot: pl.DataFrame,
     df_exchange_rate: pl.DataFrame,
     df_investment_info: pl.DataFrame,
 ) -> pl.DataFrame:
@@ -11,9 +10,7 @@ def value_data_formatter(
 
     Parameters
     ----------
-    historical_data : pl.DataFrame
-        _summary_
-    df_date : pl.DataFrame
+    df_value_pivot : pl.DataFrame
         _summary_
     df_exchange_rate : pl.DataFrame
         _summary_
@@ -27,14 +24,6 @@ def value_data_formatter(
 
     """
     try:
-        # 終値をpolarsのDataFrameに変換
-        df_value_pivot: pl.DataFrame = (
-            # 終値をpolarsのDataFrameに変換
-            pl.DataFrame(historical_data["Close"])
-            # 日付を追加
-            .with_columns(df_date)
-        )
-
         # ティッカーシンボルのリスト
         ticker_symbol_list: list[str] = df_investment_info.select(pl.col("ticker_symbol")).to_numpy().flatten().tolist()
 
@@ -66,9 +55,16 @@ def value_data_formatter(
             .join(df_investment_info, on="ticker_symbol", how="left")
             # 円建ての終値を計算
             .with_columns(
-                pl.when(pl.col("country_code") == "US")
-                .then(pl.col("value") * pl.col("JPY=X"))
-                .otherwise(pl.col("value"))  # 日本はそのまま
+                # USDの場合は為替レートをかける
+                pl.when(pl.col("currency_code") == "USD")
+                .then(
+                    # 終値 * 為替レート
+                    (pl.col("value") * pl.col("JPY=X"))
+                    # NUMERIC型の制約のため丸める
+                    .round(2)
+                )
+                # 日本はそのまま
+                .otherwise(pl.col("value").round(2))
                 .alias("value_jpy")
             )
             # 外部キーと日付，価格，円建て価格のみを残す

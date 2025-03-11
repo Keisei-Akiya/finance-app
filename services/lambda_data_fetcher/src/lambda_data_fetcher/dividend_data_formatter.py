@@ -2,8 +2,7 @@ import polars as pl
 
 
 def dividend_data_formatter(
-    historical_data: pl.DataFrame,
-    df_date: pl.DataFrame,
+    df_dividends_pivot: pl.DataFrame,
     df_exchange_rate: pl.DataFrame,
     df_investment_info: pl.DataFrame,
 ) -> pl.DataFrame:
@@ -12,9 +11,7 @@ def dividend_data_formatter(
 
     Parameters
     ----------
-    historical_data : pl.DataFrame
-
-    df_date : pl.DataFrame
+    df_value_pivot : pl.DataFrame
 
     df_exchange_rate : pl.DataFrame
 
@@ -25,14 +22,6 @@ def dividend_data_formatter(
     df_dividends : pl.DataFrame
     """
     try:
-        # 配当をpolarsのDataFrameに変換
-        df_dividends_pivot: pl.DataFrame = (
-            # 配当をpolarsのDataFrameに変換
-            pl.DataFrame(historical_data["Dividends"])
-            # 日付を追加
-            .with_columns(df_date)
-        )
-
         # ティッカーシンボルのリスト
         ticker_symbol_list: list[str] = df_investment_info.select(pl.col("ticker_symbol")).to_numpy().flatten().tolist()
 
@@ -67,10 +56,15 @@ def dividend_data_formatter(
             .join(df_exchange_rate, on=["date"], how="left")
             # 円建ての配当を計算
             .with_columns(
-                # TODO 日本かどうかの判定を追加
-                pl.when(pl.col("country_code") == "US")
-                .then(pl.col("dividends") * pl.col("JPY=X"))
-                .otherwise(pl.col("dividends"))  # 日本はそのまま
+                # 円建ての配当
+                # USDの場合は為替レートをかける
+                pl.when(pl.col("currency_code") == "USD")
+                .then(
+                    (pl.col("dividends") * pl.col("JPY=X"))
+                    # 型の制約のため丸める
+                    .round(3)
+                )
+                .otherwise(pl.col("dividends").round(3))  # 日本はそのまま
                 .alias("dividends_jpy")
             )
             # 外部キー，日付，配当，円建て配当のみを残す

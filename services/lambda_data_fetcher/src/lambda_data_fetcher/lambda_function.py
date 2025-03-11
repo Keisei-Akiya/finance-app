@@ -32,19 +32,17 @@ def lambda_handler() -> None:
         df_investment_info: pl.DataFrame = investment_info_fetcher(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 
         # 投資銘柄のヒストリカルデータを取得
-        historical_data: pl.DataFrame
-        df_date: pl.DataFrame
-        historical_data, df_date = historical_data_fetcher(df_investment_info)
+        df_value_pivot: pl.DataFrame
+        df_dividend_pivot: pl.DataFrame
+        df_value_pivot, df_dividend_pivot = historical_data_fetcher(df_investment_info)
 
         # データの整形
-        df_value: pl.DataFrame = value_data_formatter(historical_data, df_date, df_exchange_rate, df_investment_info)
-        df_dividend: pl.DataFrame = dividend_data_formatter(
-            historical_data, df_date, df_exchange_rate, df_investment_info
-        )
+        df_value: pl.DataFrame = value_data_formatter(df_value_pivot, df_exchange_rate, df_investment_info)
+        df_dividend: pl.DataFrame = dividend_data_formatter(df_dividend_pivot, df_exchange_rate, df_investment_info)
 
         # 保存
-        value_data_saver(df_value, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
-        dividend_data_saver(df_dividend, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        value_data_saver(conn, df_value)
+        dividend_data_saver(conn, df_dividend)
 
     except Exception as e:
         print(f"失敗しました: {e}")

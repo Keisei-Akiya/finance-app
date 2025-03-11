@@ -5,7 +5,6 @@ import polars as pl
 # from dividend_fetcher import dividend_fetcher
 from dotenv import load_dotenv
 from investment_info_fetcher import investment_info_fetcher
-from ticker_filter import ticker_filter
 from value_fetcher import value_fetcher
 
 
@@ -20,16 +19,14 @@ def lambda_handler() -> dict:
         DB_NAME: str | None = os.getenv("DB_NAME")
 
         # ティッカーシンボルを取得
-        ticker_symbol_list = ["VTI", "VGK", "VPL", "1490.T"]
+        ticker_symbol_list = ["VTI", "VGK", "VPL", "2561.T"]
         # `investment_info` テーブルを取得
-        df_investment_info: pl.DataFrame = investment_info_fetcher(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
-        print(df_investment_info.head())
-        # 投資対象銘柄のコードを取得
-        df_investment = ticker_filter(df_investment_info, ticker_symbol_list)
-        print(df_investment)
+        df_investment_info: pl.DataFrame = investment_info_fetcher(
+            ticker_symbol_list, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+        )
 
         # 投資対象のデータを取得
-        df_value = value_fetcher(df_investment, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        df_value = value_fetcher(df_investment_info, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
         print(df_value)
 
         # df_dividend = dividend_fetcher(df_investment, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
