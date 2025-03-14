@@ -11,7 +11,7 @@ def investment_info_fetcher(
             FROM public.investment_info
         """
 
-        # TODO クエリを開発用に絞っている
+        # クエリを開発用に絞っている
         # # ランダム
         # select_query = """
         # SELECT investment_code, ticker_symbol, country_code, currency_code

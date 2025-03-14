@@ -26,6 +26,7 @@ def lambda_handler() -> None:
         conn = psycopg2.connect(host=DB_HOST, port=DB_PORT, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD)
 
         # 為替レートを取得
+        # 日次
         df_exchange_rate: pl.DataFrame = exchange_rate_fetcher()
 
         # 投資コードとティッカーシンボルを取得

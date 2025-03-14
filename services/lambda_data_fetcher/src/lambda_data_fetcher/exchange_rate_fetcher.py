@@ -6,7 +6,7 @@ import yfinance as yf
 def exchange_rate_fetcher() -> pl.DataFrame:
     # 為替レートを取得
     try:
-        exchange_rate: pd.DataFrame = yf.Ticker("JPY=X").history(period="max")
+        exchange_rate: pd.DataFrame = yf.Ticker("JPY=X").history(period="1d")
         df_exchange_rate: pl.DataFrame = (
             # 為替レートをpolarsのDataFrameに変換
             pl.DataFrame(

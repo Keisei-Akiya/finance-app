@@ -22,16 +22,16 @@ def historical_data_fetcher(df_investment_info: pl.DataFrame) -> tuple[pl.DataFr
 
             try:
                 # TODO 期間を変更する
-                historical_data_chunk: pd.DataFrame = yf_tickers.history(period="max")[["Close", "Dividends"]]
+                historical_data_chunk: pd.DataFrame = yf_tickers.history(period="1d")[["Close", "Dividends"]]
                 # データをリストに追加
                 historical_dataframe_list.append(historical_data_chunk)
                 # 1秒待機
-                time.sleep(1)
+                time.sleep(2)
 
             except Exception as e:
                 print(f"データの取得に失敗しました: {e}")
                 # 30秒待機
-                time.sleep(30)
+                time.sleep(60)
 
         # データを結合
         historical_data: pd.DataFrame = pd.concat(
@@ -53,7 +53,7 @@ def historical_data_fetcher(df_investment_info: pl.DataFrame) -> tuple[pl.DataFr
             .rename({"Date": "date"})
         )
 
-        print("データの取得に成功しました")
+        print("データの取得が終了しました")
         return df_value_pivot, df_dividend_pivot
 
     except Exception as e:

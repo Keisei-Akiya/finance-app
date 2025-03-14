@@ -27,7 +27,7 @@ def value_data_formatter(
         # ティッカーシンボルのリスト
         ticker_symbol_list: list[str] = df_investment_info.select(pl.col("ticker_symbol")).to_numpy().flatten().tolist()
 
-        # データを長い形式に変換
+        # データをDB用の長い形式に変換
         df_value_long: pl.DataFrame = (
             df_value_pivot
             # ワイド形式から長い形式に変換
