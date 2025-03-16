@@ -1,5 +1,5 @@
+import httpx
 import pandas as pd
-import requests
 import streamlit as st
 
 
@@ -10,16 +10,16 @@ def send_to_lambda(df: pd.DataFrame) -> bool:
         st.write(json_data)
 
         # AWS Lambdaのエンドポイント
-        # lambda_url: str = "https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/default/lambda_function"
+        lambda_url: str = "https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/default/lambda_function"
 
-        # response = requests.post(lambda_url, json=json_data)
+        r = httpx.post(lambda_url, json=json_data)
 
-        # if response.status_code == 200:
-        #     st.write("正常に送信されました")
-        #     return True
-        # else:
-        #     st.write(f"リクエストが失敗しました: {response.status_code}")
-        #     return False
+        if r.status_code == 200:
+            st.write("正常に送信されました")
+            return True
+        else:
+            st.write(f"リクエストが失敗しました: {r.status_code}")
+            return False
 
     except Exception as e:
         st.write(e)
