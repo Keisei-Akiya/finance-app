@@ -1,13 +1,15 @@
 import polars as pl
 
 
-def investment_info_fetcher(ticker_symbol_list: list[str], connection_config: dict[str, str]) -> pl.DataFrame:
+def investment_code_fetcher(df_ticker_and_weight: pl.DataFrame, connection_config: dict[str, str]) -> pl.DataFrame:
     try:
+        ticker_symbol_list: list[str] = df_ticker_and_weight["ticker_symbol"].to_list()
+        # [] を外す
         ticker_symbols: str = ", ".join([f"'{ticker_symbol}'" for ticker_symbol in ticker_symbol_list])
 
         # polars
         select_query = f"""
-        SELECT investment_code, ticker_symbol, investment_name
+        SELECT investment_code, ticker_symbol
         FROM public.investment_info
         WHERE ticker_symbol IN ({ticker_symbols})
         """
@@ -25,7 +27,15 @@ def investment_info_fetcher(ticker_symbol_list: list[str], connection_config: di
             uri=uri,
         )
 
-        return df_investment_info
+        df_code_and_weight = (
+            df_investment_info.join(df_ticker_and_weight, on="ticker_symbol", how="inner")
+            # ticker_symbolカラムを削除
+            .drop("ticker_symbol")
+            # investment_code でソート
+            .sort("investment_code")
+        )
+
+        return df_code_and_weight
 
     except Exception as e:
         print(f"投資コードとティッカーシンボルの取得に失敗しました: {e}")

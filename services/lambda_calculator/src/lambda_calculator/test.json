@@ -1,0 +1,26 @@
+[
+  {
+    "ticker_symbol": "VTI",
+    "weight_pf1": 20.0,
+    "weight_pf2": 17.0,
+    "weight_pf3": 30.57
+  },
+  {
+    "ticker_symbol": "VGK",
+    "weight_pf1": 20.0,
+    "weight_pf2": 16.5,
+    "weight_pf3": 47.43
+  },
+  {
+    "ticker_symbol": "VPL",
+    "weight_pf1": 20.0,
+    "weight_pf2": 16.5,
+    "weight_pf3": 14.93
+  },
+  {
+    "ticker_symbol": "2511.T",
+    "weight_pf1": 40.0,
+    "weight_pf2": 50.0,
+    "weight_pf3": 7.07
+  }
+]

@@ -5,9 +5,11 @@
     "connectorx",
     "dotenv",
     "mypy",
+    "ndarray",
     "pkey",
     "psycopg",
     "pylint",
+    "rowvar",
     "venv"
   ],
   "[python]": {
