@@ -19,7 +19,6 @@ def lambda_handler() -> pl.DataFrame:
 
         # `investment_info` テーブルを取得
         df_code_and_weights: pl.DataFrame = investment_code_fetcher(df_ticker_and_weights, connection_config)
-        # print(df_investment_info)
 
         # 投資対象のデータを取得
         df_value: pl.DataFrame = value_fetcher(df_code_and_weights, connection_config)
@@ -29,10 +28,13 @@ def lambda_handler() -> pl.DataFrame:
         # print(df_dividend.head())
 
         # パフォーマンス計算
+
+        # 1年あたりの取引日数
         TRADING_DAYS_PER_YEAR = 252
 
         # リターン (CAGR)
-        cagr_array: np.ndarray = calculate_cagr(df_ticker_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
+        cagr_array: np.ndarray = calculate_cagr(df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
+        print(cagr_array)
 
         # ボラティリティ
         volatility_array: np.ndarray = calculate_volatility(df_code_and_weights, df_value, TRADING_DAYS_PER_YEAR)
@@ -50,7 +52,7 @@ def lambda_handler() -> pl.DataFrame:
             }
         )
 
-        # print(performance)
+        print(performance)
 
         return performance
 
