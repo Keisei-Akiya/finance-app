@@ -1,9 +1,7 @@
 import polars as pl
 
 
-def investment_info_fetcher(
-    DB_HOST: str | None, DB_PORT: str | None, DB_USER: str | None, DB_PASSWORD: str | None, DB_NAME: str | None
-) -> pl.DataFrame:
+def investment_info_fetcher(connection_config: dict[str, str | None]) -> pl.DataFrame:
     try:
         # 銘柄情報を取得
         select_query: list[str] | str = """
@@ -12,12 +10,12 @@ def investment_info_fetcher(
         """
 
         # クエリを開発用に絞っている
-        # # ランダム
-        # select_query = """
-        # SELECT investment_code, ticker_symbol, country_code, currency_code
-        # FROM public.investment_info
-        # ORDER BY RANDOM() LIMIT 10
-        # """
+        # ランダム
+        select_query = """
+        SELECT investment_code, ticker_symbol, country_code, currency_code
+        FROM public.investment_info
+        ORDER BY RANDOM() LIMIT 10
+        """
 
         # 日本のみ
         # select_query = """
@@ -37,7 +35,7 @@ def investment_info_fetcher(
         # """
         # OFFSETを300とすると，301から600までのデータを取得する
 
-        uri: str = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        uri: str = f"postgresql://{connection_config['user']}:{connection_config['password']}@{connection_config['host']}:{connection_config['port']}/{connection_config['dbname']}"
         df_investment_info: pl.DataFrame = pl.read_database_uri(query=select_query, uri=uri)
 
         return df_investment_info

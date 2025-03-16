@@ -50,7 +50,7 @@ def lambda_handler() -> pl.DataFrame:
             }
         )
 
-        print(performance)
+        # print(performance)
 
         return performance
 

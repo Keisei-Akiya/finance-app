@@ -1,7 +1,6 @@
 import numpy as np
 import polars as pl
-
-# from dividend_reinvestment_calculator import calculate_dividend_reinvestment
+from dividend_reinvestment_calculator import calculate_dividend_reinvestment
 
 
 def calculate_cagr(
@@ -9,10 +8,10 @@ def calculate_cagr(
 ) -> np.ndarray:
     try:
         # 投資対象の数
-        # num_investment: int = len(df_code_and_weights)
+        n_investment: int = len(df_code_and_weights)
 
         # 配当金再投資の価格推移を計算
-        # df_div_reinvest: pl.DataFrame = calculate_dividend_reinvestment(df_value, df_dividend)
+        df_div_reinvest: pl.DataFrame = calculate_dividend_reinvestment(df_value, df_dividend)
 
         # リターン (CAGR) を計算
         cagr_array: np.ndarray = np.array([0.5, 0.6, 0.7])

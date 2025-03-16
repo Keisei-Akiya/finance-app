@@ -21,8 +21,8 @@ def historical_data_fetcher(df_investment_info: pl.DataFrame) -> tuple[pl.DataFr
             yf_tickers = yf.Tickers(tickers=chunk)
 
             try:
-                # TODO 期間を変更する
-                historical_data_chunk: pd.DataFrame = yf_tickers.history(period="1d")[["Close", "Dividends"]]
+                # TODO 期間を変更する 1wk
+                historical_data_chunk: pd.DataFrame = yf_tickers.history(period="max")[["Close", "Dividends"]]
                 # データをリストに追加
                 historical_dataframe_list.append(historical_data_chunk)
                 # 1秒待機

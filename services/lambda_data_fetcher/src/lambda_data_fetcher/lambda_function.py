@@ -16,21 +16,23 @@ def lambda_handler() -> None:
     try:
         # PostgreSQLへの接続情報
         load_dotenv()
-        DB_HOST: str | None = os.getenv("DB_HOST")
-        DB_PORT: str | None = os.getenv("DB_PORT")
-        DB_USER: str | None = os.getenv("DB_USER")
-        DB_PASSWORD: str | None = os.getenv("DB_PASSWORD")
-        DB_NAME: str | None = os.getenv("DB_NAME")
+        connection_config: dict[str, str | None] = {
+            "dbname": os.getenv("DB_NAME"),
+            "user": os.getenv("DB_USER"),
+            "password": os.getenv("DB_PASSWORD"),
+            "host": os.getenv("DB_HOST"),
+            "port": os.getenv("DB_PORT"),
+        }
 
         # データベースへの接続
-        conn = psycopg2.connect(host=DB_HOST, port=DB_PORT, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+        conn = psycopg2.connect(**connection_config)
 
         # 為替レートを取得
         # 日次
         df_exchange_rate: pl.DataFrame = exchange_rate_fetcher()
 
         # 投資コードとティッカーシンボルを取得
-        df_investment_info: pl.DataFrame = investment_info_fetcher(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        df_investment_info: pl.DataFrame = investment_info_fetcher(connection_config)
 
         # 投資銘柄のヒストリカルデータを取得
         df_value_pivot: pl.DataFrame

@@ -6,18 +6,35 @@ import yfinance as yf
 def exchange_rate_fetcher() -> pl.DataFrame:
     # 為替レートを取得
     try:
-        exchange_rate: pd.DataFrame = yf.Ticker("JPY=X").history(period="1d")
-        df_exchange_rate: pl.DataFrame = (
-            # 為替レートをpolarsのDataFrameに変換
-            pl.DataFrame(
-                {
-                    "date": exchange_rate.index,
-                    "JPY=X": exchange_rate["Close"].to_numpy(),
-                }
-            )
-            # pl.Date型に変換
+        # TODO 期間を変更する 1wk
+        exchange_rate: pd.DataFrame = yf.Ticker("JPY=X").history(period="max")["Close"]
+        # 為替レートをpolarsのDataFrameに変換
+        df_exchange_rate_pl: pl.DataFrame = (
+            pl.DataFrame(exchange_rate.reset_index())
+            .rename({"Date": "date", "Close": "JPY=X"})
             .with_columns(pl.col("date").cast(pl.Date))
         )
+
+        # 日付を生成 (`exchange_rate`は営業日のみのデータだから日本の土日は含まれていない．)
+        start_date = df_exchange_rate_pl["date"].min()
+        end_date = df_exchange_rate_pl["date"].max()
+        date_range = pd.date_range(start=start_date, end=end_date, freq="D")
+        df_date_range = (
+            pl.DataFrame(date_range.to_numpy())
+            # 名前を付ける
+            .rename({"column_0": "date"})
+            # 日付型に変換
+            .with_columns(pl.col("date").cast(pl.Date))
+        )
+
+        df_exchange_rate = (
+            # 日付を結合
+            df_date_range.join(df_exchange_rate_pl, on="date", how="left")
+            # 欠損値を前日の値で埋める
+            .fill_null(strategy="forward")
+        )
+
+        print(df_exchange_rate)
 
         print("為替レートの取得に成功しました")
         return df_exchange_rate
