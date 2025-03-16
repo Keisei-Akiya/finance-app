@@ -21,8 +21,8 @@ def historical_data_fetcher(df_investment_info: pl.DataFrame) -> tuple[pl.DataFr
             yf_tickers = yf.Tickers(tickers=chunk)
 
             try:
-                # TODO 期間を変更する 1wk
-                historical_data_chunk: pd.DataFrame = yf_tickers.history(period="max")[["Close", "Dividends"]]
+                # 期間を1習慣に変更する (1wk)
+                historical_data_chunk: pd.DataFrame = yf_tickers.history(period="1wk")[["Close", "Dividends"]]
                 # データをリストに追加
                 historical_dataframe_list.append(historical_data_chunk)
                 # 1秒待機
@@ -40,14 +40,14 @@ def historical_data_fetcher(df_investment_info: pl.DataFrame) -> tuple[pl.DataFr
         )
 
         # 価格データをpolarsのDataFrameに変換
-        df_value_pivot = (
+        df_value_pivot: pl.DataFrame = (
             pl.DataFrame(historical_data["Close"].reset_index())
             .with_columns(pl.col("Date").cast(pl.Date))
             .rename({"Date": "date"})
         )
 
         # 配当データをpolarsのDataFrameに変換
-        df_dividend_pivot = (
+        df_dividend_pivot: pl.DataFrame = (
             pl.DataFrame(historical_data["Dividends"].reset_index())
             .with_columns(pl.col("Date").cast(pl.Date))
             .rename({"Date": "date"})

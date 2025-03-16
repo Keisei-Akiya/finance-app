@@ -31,7 +31,7 @@ def investment_info_fetcher(connection_config: dict[str, str | None]) -> pl.Data
         WHERE country_code = 'US'
         ORDER BY investment_info
         LIMIT 300
-        OFFSET 0
+        OFFSET 600
         """
         # OFFSETを300とすると，301から600までのデータを取得する
 

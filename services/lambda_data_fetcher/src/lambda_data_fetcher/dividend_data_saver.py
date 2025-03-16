@@ -1,14 +1,15 @@
 import polars as pl
-from psycopg2.extensions import connection, cursor
+import psycopg2
+import psycopg2._psycopg
 from psycopg2.extras import execute_values
 
 
-def dividend_data_saver(conn: connection, df_dividend: pl.DataFrame) -> None:
+def dividend_data_saver(conn: psycopg2._psycopg.connection, df_dividend: pl.DataFrame) -> None:
     try:
-        cur: cursor = conn.cursor()
+        cur: psycopg2._psycopg.cursor = conn.cursor()
 
         # query
-        insert_query = """
+        insert_query: str = """
         INSERT INTO public.dividend_history (investment_code, date, dividend, dividend_jpy)
         VALUES %s
         ON CONFLICT (investment_code, date) DO NOTHING;
@@ -17,7 +18,7 @@ def dividend_data_saver(conn: connection, df_dividend: pl.DataFrame) -> None:
         #     cur.execute(insert_query, (row["investment_code"], row["date"], row["dividend"], row["dividend_jpy"]))
         # conn.commit()
 
-        records = [tuple(row) for row in df_dividend.to_numpy()]
+        records: list = [tuple(row) for row in df_dividend.to_numpy()]
         execute_values(cur, insert_query, records)
         conn.commit()
 

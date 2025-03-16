@@ -2,6 +2,7 @@ import os
 
 import polars as pl
 import psycopg2
+import psycopg2._psycopg
 from dividend_data_formatter import dividend_data_formatter
 from dividend_data_saver import dividend_data_saver
 from dotenv import load_dotenv
@@ -25,7 +26,7 @@ def lambda_handler() -> None:
         }
 
         # データベースへの接続
-        conn = psycopg2.connect(**connection_config)
+        conn: psycopg2._psycopg.connection = psycopg2.connect(**connection_config)
 
         # 為替レートを取得
         # 日次
