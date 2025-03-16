@@ -12,24 +12,25 @@ def lambda_handler() -> dict:
     try:
         # データベース接続情報
         load_dotenv()
-        DB_HOST: str | None = os.getenv("DB_HOST")
-        DB_PORT: str | None = os.getenv("DB_PORT")
-        DB_USER: str | None = os.getenv("DB_USER")
-        DB_PASSWORD: str | None = os.getenv("DB_PASSWORD")
-        DB_NAME: str | None = os.getenv("DB_NAME")
+        connection_config = {
+            "host": os.getenv("DB_HOST"),
+            "port": os.getenv("DB_PORT"),
+            "user": os.getenv("DB_USER"),
+            "password": os.getenv("DB_PASSWORD"),
+            "dbname": os.getenv("DB_NAME"),
+        }
 
-        # ティッカーシンボルを取得
+        # TODO ティッカーシンボルを取得
         ticker_symbol_list = ["VTI", "VGK", "VPL", "2561.T"]
+
         # `investment_info` テーブルを取得
-        df_investment_info: pl.DataFrame = investment_info_fetcher(
-            ticker_symbol_list, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
-        )
+        df_investment_info: pl.DataFrame = investment_info_fetcher(ticker_symbol_list, connection_config)
 
         # 投資対象のデータを取得
-        df_value = value_fetcher(df_investment_info, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        df_value = value_fetcher(df_investment_info, connection_config)
         print(df_value)
 
-        # df_dividend = dividend_fetcher(df_investment, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+        # df_dividend = dividend_fetcher(df_investment, connection_config)
         # print(df_dividend.head())
 
         # 重みを取得する

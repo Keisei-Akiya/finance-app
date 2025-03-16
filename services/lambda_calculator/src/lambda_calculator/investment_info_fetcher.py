@@ -1,14 +1,7 @@
 import polars as pl
 
 
-def investment_info_fetcher(
-    ticker_symbol_list: list[str],
-    DB_HOST: str | None,
-    DB_PORT: str | None,
-    DB_USER: str | None,
-    DB_PASSWORD: str | None,
-    DB_NAME: str | None,
-) -> pl.DataFrame:
+def investment_info_fetcher(ticker_symbol_list: list[str], connection_config: dict[str, str]) -> pl.DataFrame:
     try:
         ticker_symbols: str = ", ".join([f"'{ticker_symbol}'" for ticker_symbol in ticker_symbol_list])
 
@@ -18,6 +11,13 @@ def investment_info_fetcher(
         FROM public.investment_info
         WHERE ticker_symbol IN ({ticker_symbols})
         """
+
+        # データベース接続
+        DB_HOST = connection_config["host"]
+        DB_PORT = connection_config["port"]
+        DB_USER = connection_config["user"]
+        DB_PASSWORD = connection_config["password"]
+        DB_NAME = connection_config["dbname"]
 
         uri = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
         df_investment_info: pl.DataFrame = pl.read_database_uri(
