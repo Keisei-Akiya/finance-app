@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import polars as pl
 from cagr_calculator import calculate_cagr
 from dividend_fetcher import dividend_fetcher
@@ -9,7 +10,7 @@ from value_fetcher import value_fetcher
 from volatility_calculator import calculate_volatility
 
 
-def lambda_handler() -> pl.DataFrame:
+def lambda_handler() -> str:
     try:
         # データベース接続情報を取得
         connection_config = get_connection_config()
@@ -22,28 +23,25 @@ def lambda_handler() -> pl.DataFrame:
 
         # 投資対象のデータを取得
         df_value: pl.DataFrame = value_fetcher(df_code_and_weights, connection_config)
-        # print(df_value)
 
         df_dividend: pl.DataFrame = dividend_fetcher(df_code_and_weights, connection_config)
-        # print(df_dividend.head())
 
         # パフォーマンス計算
-
         # 1年あたりの取引日数
         TRADING_DAYS_PER_YEAR = 252
 
         # リターン (CAGR)
         cagr_array: np.ndarray = calculate_cagr(df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
-        print(cagr_array)
 
         # ボラティリティ
         volatility_array: np.ndarray = calculate_volatility(df_code_and_weights, df_value, TRADING_DAYS_PER_YEAR)
 
         # シャープレシオ
-        sharpe_ratio_array: np.ndarray = cagr_array / volatility_array
+        rf = 0  # リスクフリーレートは0とする
+        sharpe_ratio_array: np.ndarray = (cagr_array - rf) / volatility_array
 
-        # パフォーマンスをまとめる
-        performance: pl.DataFrame = pl.DataFrame(
+        # 返却用にパフォーマンスをPandasにまとめる
+        df_performance: pd.DataFrame = pd.DataFrame(
             {
                 "pf_id": [1, 2, 3],
                 "cagr": cagr_array,
@@ -52,9 +50,10 @@ def lambda_handler() -> pl.DataFrame:
             }
         )
 
-        print(performance)
+        # jsonに変換
+        json_performance: str = df_performance.to_json()
 
-        return performance
+        return json_performance
 
     except Exception as e:
         print(f"Error: {e}")
