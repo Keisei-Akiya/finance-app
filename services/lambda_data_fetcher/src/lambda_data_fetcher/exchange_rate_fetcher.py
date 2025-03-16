@@ -27,6 +27,8 @@ def exchange_rate_fetcher() -> pl.DataFrame:
             .with_columns(pl.col("date").cast(pl.Date))
         )
 
+        print("為替レートの取得に成功しました")
+
         df_exchange_rate = (
             # 日付を結合
             df_date_range.join(df_exchange_rate_pl, on="date", how="left")
@@ -34,10 +36,10 @@ def exchange_rate_fetcher() -> pl.DataFrame:
             .fill_null(strategy="forward")
         )
 
-        print(df_exchange_rate)
+        print("為替レートの欠損値の補完に成功しました")
 
-        print("為替レートの取得に成功しました")
         return df_exchange_rate
+
     except Exception as e:
         print(f"為替レートの取得に失敗しました: {e}")
         exit()

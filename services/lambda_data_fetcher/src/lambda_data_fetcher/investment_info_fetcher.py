@@ -11,11 +11,11 @@ def investment_info_fetcher(connection_config: dict[str, str | None]) -> pl.Data
 
         # クエリを開発用に絞っている
         # ランダム
-        select_query = """
-        SELECT investment_code, ticker_symbol, country_code, currency_code
-        FROM public.investment_info
-        ORDER BY RANDOM() LIMIT 10
-        """
+        # select_query = """
+        # SELECT investment_code, ticker_symbol, country_code, currency_code
+        # FROM public.investment_info
+        # ORDER BY RANDOM() LIMIT 10
+        # """
 
         # 日本のみ
         # select_query = """
@@ -25,14 +25,14 @@ def investment_info_fetcher(connection_config: dict[str, str | None]) -> pl.Data
         # """
 
         # アメリカのみ
-        # select_query = """
-        # SELECT investment_code, ticker_symbol, country_code, currency_code
-        # FROM public.investment_info
-        # WHERE country_code = 'US'
-        # ORDER BY investment_info
-        # LIMIT 300
-        # OFFSET 300
-        # """
+        select_query = """
+        SELECT investment_code, ticker_symbol, country_code, currency_code
+        FROM public.investment_info
+        WHERE country_code = 'US'
+        ORDER BY investment_info
+        LIMIT 300
+        OFFSET 0
+        """
         # OFFSETを300とすると，301から600までのデータを取得する
 
         uri: str = f"postgresql://{connection_config['user']}:{connection_config['password']}@{connection_config['host']}:{connection_config['port']}/{connection_config['dbname']}"
