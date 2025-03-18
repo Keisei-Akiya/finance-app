@@ -4,10 +4,12 @@ from streamlit.delta_generator import DeltaGenerator
 
 def label() -> None:
     try:
+        # カラムを4つ作成
         grid: list[DeltaGenerator] = st.columns(4)
 
+        # ラベルを表示
         with grid[0]:
-            st.write("ティッカー")
+            st.write("")
         with grid[1]:
             st.write("ポートフォリオ1")
         with grid[2]:

@@ -11,19 +11,26 @@ def validate_weights(df: pd.DataFrame) -> bool:
 
     """
     try:
-        # PF1のウェイトは必ず入力
-        if 0 <= df["weight_pf1"].sum() < 100:
+        # PF1
+        # 100以外は入力できない
+        if not df["weight_pf1"].sum() == 100:
             st.write("ポートフォリオ1のウェイトの合計が100%になるようにしてください")
             return False
 
-        # PF2のウェイトは0でも良い
-        elif 0 < df["weight_pf2"].sum() < 100:
-            st.write("ポートフォリオ2のウェイトの合計が100%になるようにしてください")
+        # PF2
+        elif df["weight_pf2"].sum() == 0:
+            return True
+
+        elif not df["weight_pf2"].sum() == 100:
+            st.write("ポートフォリオ2のウェイトの合計は0か100%になるようにしてください")
             return False
 
-        # PF3のウェイトは0でも良い
-        elif 0 < df["weight_pf3"].sum() < 100:
-            st.write("ポートフォリオ3のウェイトの合計が100%になるようにしてください")
+        # PF3
+        elif df["weight_pf3"].sum() == 0:
+            return True
+
+        elif not df["weight_pf3"].sum() == 100:
+            st.write("ポートフォリオ3のウェイトの合計は0か100%になるようにしてください")
             return False
 
         return True

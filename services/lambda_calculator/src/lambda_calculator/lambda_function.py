@@ -15,7 +15,7 @@ def lambda_handler() -> str:
         # データベース接続情報を取得
         connection_config = get_connection_config()
 
-        # TODO ティッカーシンボルを取得
+        # TODO リクエストからティッカーシンボルとウェイトを取得
         df_ticker_and_weights: pl.DataFrame = json_to_dataframe()
 
         # `investment_info` テーブルを取得
