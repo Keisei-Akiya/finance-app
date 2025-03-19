@@ -1,6 +1,11 @@
+import os
+
 import httpx
 import polars as pl
 import streamlit as st
+from dotenv import load_dotenv
+
+from Organisms.output import output
 
 
 def send_to_lambda(df: pl.DataFrame) -> bool:
@@ -13,19 +18,30 @@ def send_to_lambda(df: pl.DataFrame) -> bool:
     Returns:
         bool: _description_
     """
+
     try:
-        # Pandas DataFrameをJSONに変換
-        json_data = df.write_json()
-        st.write(json_data)
+        load_dotenv()
+        uri: str | None = os.getenv("LAMBDA_URI")
+        if uri is None:
+            st.write("環境変数 LAMBDA_URI が設定されていません")
+            return False
 
-        # AWS Lambdaのエンドポイント
-        lambda_url: str = "https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/default/lambda_function"
+        # polars dataframe to json
+        json_data = df.to_dict(as_series=False)
 
-        r = httpx.post(lambda_url, json=json_data)
+        # Lambda に POST リクエストを送信
+        r = httpx.post(uri, json=json_data)
 
         if r.status_code == 200:
-            st.write("正常に送信されました")
+            print("リクエストが成功しました")
+
+            # 文字列型のbodyを渡す
+            dict_result: dict = r.json()[0]
+            body: str = dict_result["body"]
+            output(body)
+
             return True
+
         else:
             st.write(f"リクエストが失敗しました: {r.status_code}")
             return False

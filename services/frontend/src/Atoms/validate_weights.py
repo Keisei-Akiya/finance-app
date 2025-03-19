@@ -6,34 +6,30 @@ def validate_weights(df: pl.DataFrame) -> bool:
     """入力されたウェイトのバリデーションを行う
 
     Args:
-        df (pd.DataFrame): _description_
+        df (pd.DataFrame): 入力されたウェイトのデータフレーム
 
 
     """
     try:
-        # PF1
-        # 100以外は入力できない
-        if not df["weight_pf1"].sum() == 100:
-            st.write("ポートフォリオ1のウェイトの合計が100%になるようにしてください")
-            return False
+        pf1 = df["weight_pf1"].sum()
+        pf2 = df["weight_pf2"].sum()
+        pf3 = df["weight_pf3"].sum()
 
-        # PF2
-        elif df["weight_pf2"].sum() == 0:
+        # PF1 100
+        if pf1 == 100 and pf2 == 0 and pf3 == 0:
             return True
 
-        elif not df["weight_pf2"].sum() == 100:
-            st.write("ポートフォリオ2のウェイトの合計は0か100%になるようにしてください")
-            return False
-
-        # PF3
-        elif df["weight_pf3"].sum() == 0:
+        # PF1とPF2 100
+        elif pf1 == 100 and pf2 == 100 and pf3 == 0:
             return True
 
-        elif not df["weight_pf3"].sum() == 100:
-            st.write("ポートフォリオ3のウェイトの合計は0か100%になるようにしてください")
-            return False
+        # 全部 100
+        elif pf1 == 100 and pf2 == 100 and pf3 == 100:
+            return True
 
-        return True
+        else:
+            st.write("ウェイトの合計値が100%になっていません")
+            return False
 
     except Exception as e:
         st.write(e)

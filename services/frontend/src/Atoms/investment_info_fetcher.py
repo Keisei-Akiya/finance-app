@@ -34,7 +34,6 @@ def fetch_investment_info() -> pd.DataFrame:
             # ティッカーと名前を合体させたカラムを作成
             .with_columns((pl.col("ticker_symbol") + " " + pl.col("investment_name")).alias("ticker_and_name"))
         )
-        print(df)
 
         return df
 
