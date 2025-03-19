@@ -2,7 +2,6 @@ import polars as pl
 import streamlit as st
 
 from Atoms.investment_info_fetcher import fetch_investment_info
-from Atoms.label import label
 from Molecules.add_ticker import add_ticker
 from Molecules.check_sum_weight import check_sum_weight
 from Organisms.analyse_button import analyse_button

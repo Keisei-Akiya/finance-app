@@ -16,7 +16,7 @@ def ticker_weight_form(i: int, df_investment_info: pl.DataFrame) -> list[str | f
             options=ticker_options,
             index=None,
             key=f"ticker_and_name_{i}",
-            help="日本の銘柄は英数字が全角になっている場合があります．",
+            help="日本の銘柄は英数字が全角になっている場合があります。",
         )
 
         # カラムを4つ作成
