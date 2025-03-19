@@ -11,7 +11,7 @@ from modules.value_fetcher import value_fetcher
 def lambda_handler(event: any = None, context: any = None) -> tuple[str, str]:
     try:
         # データベース接続情報を取得
-        connection_config = get_connection_config()
+        connection_config: dict = get_connection_config()
 
         # TODO リクエストから銘柄コードとウェイトを取得
         df_code_and_weights: pl.DataFrame = json_to_dataframe(event)
@@ -24,7 +24,7 @@ def lambda_handler(event: any = None, context: any = None) -> tuple[str, str]:
         analysis_period: str = get_analysis_period(df_value)
 
         # 1年あたりの取引日数
-        TRADING_DAYS_PER_YEAR = 252
+        TRADING_DAYS_PER_YEAR: int = 252
         # パフォーマンス計算
         json_performance: str = calculate_performance(df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
         print(json_performance)
