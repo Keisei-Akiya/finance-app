@@ -1,9 +1,9 @@
 import httpx
-import pandas as pd
+import polars as pl
 import streamlit as st
 
 
-def send_to_lambda(df: pd.DataFrame) -> bool:
+def send_to_lambda(df: pl.DataFrame) -> bool:
     """Lambdaにデータを送信する
     TODO: この関数を実装する
 
@@ -15,7 +15,7 @@ def send_to_lambda(df: pd.DataFrame) -> bool:
     """
     try:
         # Pandas DataFrameをJSONに変換
-        json_data = df.to_json(orient="records")
+        json_data = df.write_json()
         st.write(json_data)
 
         # AWS Lambdaのエンドポイント

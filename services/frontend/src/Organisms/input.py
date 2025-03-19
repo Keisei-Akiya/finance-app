@@ -1,6 +1,7 @@
-import pandas as pd
+import polars as pl
 import streamlit as st
 
+from Atoms.investment_info_fetcher import fetch_investment_info
 from Atoms.label import label
 from Molecules.add_ticker import add_ticker
 from Molecules.check_sum_weight import check_sum_weight
@@ -15,11 +16,11 @@ def input() -> None:
         num_tickers: int = st.number_input("銘柄数 (20個まで)", 1, 20, 1)
         st.divider()
 
-        # ラベル．(PF1，PF2，PF3)
-        label()
+        # 投資銘柄マスタから銘柄情報を取得
+        df_investment_info: pl.DataFrame = fetch_investment_info()
 
         # 銘柄の追加
-        df: pd.DataFrame = add_ticker(num_tickers)
+        df: pl.DataFrame = add_ticker(num_tickers, df_investment_info)
 
         # ウェイトの合計値が100%かどうかをチェック
         check_sum_weight(df)

@@ -3,6 +3,10 @@ from streamlit.delta_generator import DeltaGenerator
 
 
 def label() -> None:
+    """ラベル
+
+    使わないかもしれない
+    """
     try:
         # カラムを4つ作成
         grid: list[DeltaGenerator] = st.columns(4)

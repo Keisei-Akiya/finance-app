@@ -1,4 +1,4 @@
-import pandas as pd
+import polars as pl
 import streamlit as st
 
 from Atoms.validate_ticker_symbols import validate_ticker_symbols
@@ -7,7 +7,7 @@ from Organisms.output import output
 from Organisms.send_to_lambda import send_to_lambda
 
 
-def analyse_button(df: pd.DataFrame) -> None:
+def analyse_button(df: pl.DataFrame) -> None:
     try:
         if st.button("分析開始"):
             # 正常に動作した場合リクエストを送信

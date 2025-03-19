@@ -1,8 +1,8 @@
-import pandas as pd
+import polars as pl
 import streamlit as st
 
 
-def validate_ticker_symbols(df: pd.DataFrame) -> bool:
+def validate_ticker_symbols(df: pl.DataFrame) -> bool:
     """入力されたティッカーシンボルのバリデーションを行う
 
     Args:
@@ -12,11 +12,11 @@ def validate_ticker_symbols(df: pd.DataFrame) -> bool:
     """
     try:
         # エラーメッセージ
-        if df["ticker_symbol"].isnull().sum() > 0:
+        if df["investment_code"].is_null().sum() > 0:
             st.write("ティッカーシンボルを入力してください")
             return False
 
-        elif df["ticker_symbol"].duplicated().sum() > 0:
+        elif df["investment_code"].is_duplicated().any():
             st.write("ティッカーシンボルが重複しています")
             return False
 

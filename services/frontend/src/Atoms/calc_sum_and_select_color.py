@@ -1,8 +1,8 @@
-import pandas as pd
+import polars as pl
 import streamlit as st
 
 
-def calc_sum_and_select_color(df: pd.DataFrame, column_name: str) -> None:
+def calc_sum_and_select_color(df: pl.DataFrame, column_name: str) -> None:
     sum_weight: float = df[column_name].sum()
 
     # 0%の場合は色指定しない

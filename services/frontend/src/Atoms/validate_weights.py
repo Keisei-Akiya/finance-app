@@ -1,8 +1,8 @@
-import pandas as pd
+import polars as pl
 import streamlit as st
 
 
-def validate_weights(df: pd.DataFrame) -> bool:
+def validate_weights(df: pl.DataFrame) -> bool:
     """入力されたウェイトのバリデーションを行う
 
     Args:

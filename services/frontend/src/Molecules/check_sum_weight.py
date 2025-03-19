@@ -1,11 +1,11 @@
-import pandas as pd
+import polars as pl
 import streamlit as st
 from streamlit.delta_generator import DeltaGenerator
 
 from Atoms.calc_sum_and_select_color import calc_sum_and_select_color
 
 
-def check_sum_weight(df: pd.DataFrame) -> None:
+def check_sum_weight(df: pl.DataFrame) -> None:
     try:
         grid: list[DeltaGenerator] = st.columns(4)
 
