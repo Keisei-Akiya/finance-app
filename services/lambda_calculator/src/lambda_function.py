@@ -10,13 +10,14 @@ from value_fetcher import value_fetcher
 from volatility_calculator import calculate_volatility
 
 
-def lambda_handler() -> str:
+def lambda_handler(event, context) -> str:
     try:
         # データベース接続情報を取得
         connection_config = get_connection_config()
 
         # TODO リクエストからティッカーシンボルとウェイトを取得
-        df_ticker_and_weights: pl.DataFrame = json_to_dataframe()
+        df_ticker_and_weights: pl.DataFrame = json_to_dataframe(event)
+        print(event)
 
         # `investment_info` テーブルを取得
         df_code_and_weights: pl.DataFrame = investment_code_fetcher(df_ticker_and_weights, connection_config)
@@ -44,14 +45,21 @@ def lambda_handler() -> str:
         df_performance: pd.DataFrame = pd.DataFrame(
             {
                 "pf_id": [1, 2, 3],
-                "cagr": cagr_array,
+                "return": cagr_array,
                 "volatility": volatility_array,
                 "sharpe_ratio": sharpe_ratio_array,
             }
         )
 
+        print("pandasのデータフレーム")
+        print(df_performance)
+
         # jsonに変換
         json_performance: str = df_performance.to_json()
+
+        print("")
+        print("json形式のデータ")
+        print(json_performance)
 
         return json_performance
 

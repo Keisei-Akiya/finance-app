@@ -4,6 +4,15 @@ import streamlit as st
 
 
 def send_to_lambda(df: pd.DataFrame) -> bool:
+    """Lambdaにデータを送信する
+    TODO: この関数を実装する
+
+    Args:
+        df (pd.DataFrame): _description_
+
+    Returns:
+        bool: _description_
+    """
     try:
         # Pandas DataFrameをJSONに変換
         json_data = df.to_json(orient="records")

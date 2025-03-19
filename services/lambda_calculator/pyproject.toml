@@ -10,7 +10,7 @@ dependencies = [
     "numpy>=2.2.3",
     "pandas>=2.2.3",
     "polars>=1.24.0",
-    "psycopg2>=2.9.10",
+    "psycopg2-binary>=2.9.10",
     "pyarrow>=19.0.1",
     "sqlalchemy>=2.0.38",
 ]

@@ -13,9 +13,8 @@ def calculate_sigma_pf(
         sigma2_pf: np.float64 = weights @ cov_matrix @ weights
         # ポートフォリオの年率ボラティリティ
         sigma_pf: np.float64 = np.sqrt(sigma2_pf) * np.sqrt(TRADING_DAYS_PER_YEAR)
-        volatility: np.float64 = round(sigma_pf, 2)
 
-        return volatility
+        return sigma_pf
 
     except Exception as e:
         print(f"ポートフォリオ{pf_num}のボラティリティの計算に失敫しました: {e}")

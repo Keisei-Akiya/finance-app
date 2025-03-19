@@ -1,9 +1,10 @@
 import json
+from io import StringIO
 
 import polars as pl
 
 
-def json_to_dataframe() -> pl.DataFrame:
+def json_to_dataframe(event) -> pl.DataFrame:
     """
     Convert JSON data to a Polars DataFrame.
 
@@ -17,7 +18,8 @@ def json_to_dataframe() -> pl.DataFrame:
     pl.DataFrame
         Polars DataFrame.
     """
-    # TODO 仮の JSON データ
-    df_ticker_and_weights: pl.DataFrame = pl.read_json("./test.json")
+
+    # JSONをDataFrameに変換
+    df_ticker_and_weights: pl.DataFrame = pl.DataFrame(event)
 
     return df_ticker_and_weights
