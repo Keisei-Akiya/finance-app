@@ -1,6 +1,7 @@
 import numpy as np
 import polars as pl
-from dividend_reinvestment_calculator import calculate_dividend_reinvestment
+
+from modules.dividend_reinvestment_calculator import calculate_dividend_reinvestment
 
 
 def calculate_cagr(

@@ -4,6 +4,7 @@
     "cagr",
     "connectorx",
     "dotenv",
+    "ipynb",
     "mypy",
     "ndarray",
     "pkey",

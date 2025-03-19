@@ -1,7 +1,8 @@
 import numpy as np
 import polars as pl
-from calculate_covariance_matrix import calculate_covariance_matrix
-from calculate_sigma_pf import calculate_sigma_pf
+
+from modules.calculate_covariance_matrix import calculate_covariance_matrix
+from modules.calculate_sigma_pf import calculate_sigma_pf
 
 
 def calculate_volatility(

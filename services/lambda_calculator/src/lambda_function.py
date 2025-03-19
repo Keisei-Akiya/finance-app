@@ -1,35 +1,34 @@
 import numpy as np
 import pandas as pd
 import polars as pl
-from cagr_calculator import calculate_cagr
-from dividend_fetcher import dividend_fetcher
-from get_connection_config import get_connection_config
-from investment_code_fetcher import investment_code_fetcher
-from json_to_dataframe import json_to_dataframe
-from value_fetcher import value_fetcher
-from volatility_calculator import calculate_volatility
+
+from modules.cagr_calculator import calculate_cagr
+from modules.dividend_fetcher import dividend_fetcher
+from modules.get_analysis_period import get_analysis_period
+from modules.get_connection_config import get_connection_config
+from modules.json_to_dataframe import json_to_dataframe
+from modules.value_fetcher import value_fetcher
+from modules.volatility_calculator import calculate_volatility
 
 
-def lambda_handler(event, context) -> str:
+def lambda_handler(event: any = None, context: any = None) -> str:
     try:
         # データベース接続情報を取得
         connection_config = get_connection_config()
 
-        # TODO リクエストからティッカーシンボルとウェイトを取得
-        df_ticker_and_weights: pl.DataFrame = json_to_dataframe(event)
-        print(event)
-
-        # `investment_info` テーブルを取得
-        df_code_and_weights: pl.DataFrame = investment_code_fetcher(df_ticker_and_weights, connection_config)
+        # TODO リクエストから銘柄コードとウェイトを取得
+        df_code_and_weights: pl.DataFrame = json_to_dataframe(event)
 
         # 投資対象のデータを取得
         df_value: pl.DataFrame = value_fetcher(df_code_and_weights, connection_config)
-
         df_dividend: pl.DataFrame = dividend_fetcher(df_code_and_weights, connection_config)
 
         # パフォーマンス計算
         # 1年あたりの取引日数
         TRADING_DAYS_PER_YEAR = 252
+
+        # 分析期間
+        analysis_period: str = get_analysis_period(df_value)
 
         # リターン (CAGR)
         cagr_array: np.ndarray = calculate_cagr(df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
@@ -51,17 +50,10 @@ def lambda_handler(event, context) -> str:
             }
         )
 
-        print("pandasのデータフレーム")
-        print(df_performance)
-
         # jsonに変換
         json_performance: str = df_performance.to_json()
 
-        print("")
-        print("json形式のデータ")
-        print(json_performance)
-
-        return json_performance
+        return analysis_period, json_performance
 
     except Exception as e:
         print(f"Error: {e}")

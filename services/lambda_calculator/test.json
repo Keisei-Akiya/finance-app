@@ -1,24 +1,24 @@
 [
   {
-    "ticker_symbol": "VTI",
+    "investment_code": "578af4c3-db63-4441-b03c-aa297e447c54",
     "weight_pf1": 20.0,
     "weight_pf2": 17.0,
     "weight_pf3": 30.57
   },
   {
-    "ticker_symbol": "VGK",
+    "investment_code": "a83d16d7-8390-4f91-aaf8-8e73bfd26267",
     "weight_pf1": 20.0,
     "weight_pf2": 16.5,
     "weight_pf3": 47.43
   },
   {
-    "ticker_symbol": "VPL",
+    "investment_code": "f4ee044b-a243-4661-9098-1284de08c083",
     "weight_pf1": 20.0,
     "weight_pf2": 16.5,
     "weight_pf3": 14.93
   },
   {
-    "ticker_symbol": "2511.T",
+    "investment_code": "73ec8e17-436e-42eb-80bf-a46f6bfec746",
     "weight_pf1": 40.0,
     "weight_pf2": 50.0,
     "weight_pf3": 7.07
