@@ -1,4 +1,7 @@
 import polars as pl
+import psycopg2
+import psycopg2._psycopg
+from aws_lambda_typing import context as lambda_context
 
 from modules.dividend_fetcher import dividend_fetcher
 from modules.get_analysis_period import get_analysis_period
@@ -8,17 +11,17 @@ from modules.performance_calculator import calculate_performance
 from modules.value_fetcher import value_fetcher
 
 
-def lambda_handler(event: any = None, context: any = None) -> tuple[str, str]:
+def lambda_handler(event: dict = None, context: lambda_context = None) -> tuple[str, str]:
     try:
         # データベース接続情報を取得
-        connection_config: dict = get_connection_config()
+        conn: psycopg2._psycopg.connection = get_connection_config()
 
         # TODO リクエストから銘柄コードとウェイトを取得
         df_code_and_weights: pl.DataFrame = json_to_dataframe(event)
 
         # 投資対象のデータを取得
-        df_value: pl.DataFrame = value_fetcher(df_code_and_weights, connection_config)
-        df_dividend: pl.DataFrame = dividend_fetcher(df_code_and_weights, connection_config)
+        df_value: pl.DataFrame = value_fetcher(df_code_and_weights, conn)
+        df_dividend: pl.DataFrame = dividend_fetcher(df_code_and_weights, conn)
 
         # 分析期間
         analysis_period: str = get_analysis_period(df_value)
@@ -34,6 +37,10 @@ def lambda_handler(event: any = None, context: any = None) -> tuple[str, str]:
     except Exception as e:
         print(f"Error: {e}")
         exit()
+
+    finally:
+        # データベース接続をクローズ
+        conn.close()
 
 
 if __name__ == "__main__":

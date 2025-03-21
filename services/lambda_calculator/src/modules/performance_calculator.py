@@ -1,3 +1,4 @@
+import numpy as np
 import polars as pl
 
 from modules.cagr_calculator import calculate_cagr
@@ -6,18 +7,18 @@ from modules.volatility_calculator import calculate_volatility
 
 def calculate_performance(
     df_code_and_weights: pl.DataFrame, df_value: pl.DataFrame, df_dividend: pl.DataFrame, TRADING_DAYS_PER_YEAR: int
-) -> pl.DataFrame:
+) -> str:
     try:
         # パフォーマンス計算
         # リターン (CAGR)
-        cagr_array: pl.Series = calculate_cagr(df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
+        cagr_array: np.ndarray = calculate_cagr(df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
 
         # ボラティリティ
-        volatility_array: pl.Series = calculate_volatility(df_code_and_weights, df_value, TRADING_DAYS_PER_YEAR)
+        volatility_array: np.ndarray = calculate_volatility(df_code_and_weights, df_value, TRADING_DAYS_PER_YEAR)
 
         # シャープレシオ
         rf = 0  # リスクフリーレートは0とする
-        sharpe_ratio_array: pl.Series = (cagr_array - rf) / volatility_array
+        sharpe_ratio_array: np.ndarray = (cagr_array - rf) / volatility_array
 
         # 返却用にパフォーマンスをPandasにまとめる
         df_performance: pl.DataFrame = pl.DataFrame(

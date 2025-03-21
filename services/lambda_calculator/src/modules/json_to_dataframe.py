@@ -1,7 +1,7 @@
 import polars as pl
 
 
-def json_to_dataframe(event: any = None) -> pl.DataFrame:
+def json_to_dataframe(event: dict) -> pl.DataFrame:
     """
     Convert JSON data to a Polars DataFrame.
 
@@ -15,11 +15,15 @@ def json_to_dataframe(event: any = None) -> pl.DataFrame:
     pl.DataFrame
         Polars DataFrame.
     """
+    try:
+        # JSONをDataFrameに変換
+        df_code_and_weights: pl.DataFrame = pl.DataFrame(event)
 
-    # JSONをDataFrameに変換
-    # df_code_and_weights: pl.DataFrame = pl.DataFrame(event)
+        if len(df_code_and_weights) == 0:
+            df_code_and_weights = pl.read_json("./test.json")
 
-    # 仮
-    df_code_and_weights: pl.DataFrame = pl.read_json("./test.json")
+        return df_code_and_weights
 
-    return df_code_and_weights
+    except Exception as e:
+        print(f"Error: {e}")
+        exit()
