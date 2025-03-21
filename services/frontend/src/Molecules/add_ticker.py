@@ -1,19 +1,19 @@
-import pandas as pd
 import polars as pl
 import streamlit as st
 
 from Atoms.ticker_weight_form import ticker_weight_form
 
 
-def add_ticker(num_tickers: int, df_investment_info: pl.DataFrame) -> pd.DataFrame:
+def add_ticker(num_tickers: int, df_investment_info: pl.DataFrame) -> pl.DataFrame:
     try:
         # ティッカーとウェイトを入力してDataFrameを作成
         all_ticker_weights: list[list[str | float]] = [
             ticker_weight_form(i, df_investment_info) for i in range(num_tickers)
         ]
 
-        df_ticker_weights: pl.DataFrame = (
-            # DataFrameを作成
+        # 銘柄コードとウェイトのDataFrameを作成
+        df: pl.DataFrame = (
+            # まずティッカーとウェイトのDataFrameを作成
             pl.DataFrame(
                 {
                     "ticker_and_name": [tw[0] for tw in all_ticker_weights],
@@ -29,11 +29,6 @@ def add_ticker(num_tickers: int, df_investment_info: pl.DataFrame) -> pd.DataFra
                 pl.col("weight_pf2").cast(pl.Float64),
                 pl.col("weight_pf3").cast(pl.Float64),
             )
-        )
-
-        # 投資コードとウェイトを結合
-        df_code_weights: pl.DataFrame = (
-            df_ticker_weights
             # ticker_and_name で結合
             .join(df_investment_info, on="ticker_and_name", how="left")
             # カラムの整理
@@ -47,7 +42,8 @@ def add_ticker(num_tickers: int, df_investment_info: pl.DataFrame) -> pd.DataFra
             )
         )
 
-        return df_code_weights
+        return df
 
     except Exception as e:
         st.write(e)
+        exit()
