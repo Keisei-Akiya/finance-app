@@ -26,6 +26,8 @@ def ticker_weight_form(i: int, df_investment_info: pl.DataFrame) -> list[str | f
         for col in range(1, 4):
             create_weight_input(grid[col], f"weight_pf{col}_{i}", i=col)
 
+        st.divider()
+
         # list に格納
         ticker_weights: list[str | float] = [
             st.session_state[f"ticker_and_name_{i}"],
