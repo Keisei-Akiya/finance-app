@@ -1,29 +1,20 @@
-import os
-
 import polars as pl
 import psycopg2
 import psycopg2._psycopg
-from dividend_data_formatter import dividend_data_formatter
-from dividend_data_saver import dividend_data_saver
-from dotenv import load_dotenv
-from exchange_rate_fetcher import exchange_rate_fetcher
-from historical_data_fetcher import historical_data_fetcher
-from investment_info_fetcher import investment_info_fetcher
-from value_data_formatter import value_data_formatter
-from value_data_saver import value_data_saver
+from modules.dividend_data_formatter import dividend_data_formatter
+from modules.dividend_data_saver import dividend_data_saver
+from modules.exchange_rate_fetcher import exchange_rate_fetcher
+from modules.get_environment_variable import get_environment_variable
+from modules.historical_data_fetcher import historical_data_fetcher
+from modules.investment_info_fetcher import investment_info_fetcher
+from modules.value_data_formatter import value_data_formatter
+from modules.value_data_saver import value_data_saver
 
 
-def lambda_handler() -> None:
+def lambda_handler(event, context) -> None:
     try:
         # PostgreSQLへの接続情報
-        load_dotenv()
-        connection_config: dict[str, str | None] = {
-            "dbname": os.getenv("DB_NAME"),
-            "user": os.getenv("DB_USER"),
-            "password": os.getenv("DB_PASSWORD"),
-            "host": os.getenv("DB_HOST"),
-            "port": os.getenv("DB_PORT"),
-        }
+        connection_config: dict[str, str | None] = get_environment_variable()
 
         # データベースへの接続
         conn: psycopg2._psycopg.connection = psycopg2.connect(**connection_config)
@@ -53,8 +44,9 @@ def lambda_handler() -> None:
         exit()
 
     finally:
+        # データベースへの接続を切断
         conn.close()
 
 
 if __name__ == "__main__":
-    lambda_handler()
+    lambda_handler(event, context)

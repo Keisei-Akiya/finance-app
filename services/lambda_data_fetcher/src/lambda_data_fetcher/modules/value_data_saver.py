@@ -16,10 +16,6 @@ def value_data_saver(conn: psycopg2._psycopg.connection, df_value: pl.DataFrame)
         ON CONFLICT (investment_code, date) DO NOTHING;
         """
 
-        # for row in df_value.iter_rows(named=True):
-        #     cur.execute(insert_query, (row["investment_code"], row["date"], row["value"], row["value_jpy"]))
-        # conn.commit()
-
         records: list = [tuple(row) for row in df_value.to_numpy()]
         execute_values(cur, insert_query, records)
         conn.commit()

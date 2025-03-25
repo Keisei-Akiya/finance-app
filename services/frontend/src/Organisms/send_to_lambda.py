@@ -22,7 +22,7 @@ def send_to_lambda(df: pl.DataFrame) -> bool:
         load_dotenv()
         uri: str | None = os.getenv("API_GATEWAY_URI")
         if uri is None:
-            st.write("環境変数 LAMBDA_URI が設定されていません")
+            st.write("環境変数 API_GATEWAY_URI が設定されていません")
             return False
 
         # polars dataframe to json
