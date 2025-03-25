@@ -8,12 +8,12 @@ def get_connection_config() -> psycopg2._psycopg.connection:
     try:
         # 環境変数からデータベース接続情報を取得
         try:
-            config: dict[str, str] = {
-                "DB_HOST": os.environ["DB_HOST"],
-                "DB_PORT": os.environ["DB_PORT"],
-                "DB_NAME": os.environ["DB_NAME"],
-                "DB_USER": os.environ["DB_USER"],
-                "DB_PASS": os.environ["DB_PASSWORD"],
+            config: dict[str, str | None] = {
+                "host": os.getenv("DB_HOST"),
+                "port": os.getenv("DB_PORT"),
+                "dbname": os.getenv("DB_NAME"),
+                "user": os.getenv("DB_USER"),
+                "password": os.getenv("DB_PASSWORD"),
             }
 
         except KeyError as e:

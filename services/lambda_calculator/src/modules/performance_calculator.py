@@ -7,7 +7,7 @@ from modules.volatility_calculator import calculate_volatility
 
 def calculate_performance(
     df_code_and_weights: pl.DataFrame, df_value: pl.DataFrame, df_dividend: pl.DataFrame, TRADING_DAYS_PER_YEAR: int
-) -> str:
+) -> dict[str, str | float]:
     try:
         # パフォーマンス計算
         # リターン (CAGR)

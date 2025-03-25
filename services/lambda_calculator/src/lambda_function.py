@@ -1,3 +1,5 @@
+import json
+
 import polars as pl
 import psycopg2
 import psycopg2._psycopg
@@ -29,10 +31,14 @@ def lambda_handler(event: dict = None, context: lambda_context = None) -> tuple[
         # 1年あたりの取引日数
         TRADING_DAYS_PER_YEAR: int = 252
         # パフォーマンス計算
-        json_performance: str = calculate_performance(df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR)
+        json_performance: dict[str, str | float] = calculate_performance(
+            df_code_and_weights, df_value, df_dividend, TRADING_DAYS_PER_YEAR
+        )
         print(json_performance)
 
-        return analysis_period, json_performance
+        response_body = {"analysis_period": analysis_period, "performance": json_performance}
+
+        return {"statusCode": 200, "body": json.dumps(response_body), "headers": {"Content-Type": "application/json"}}
 
     except Exception as e:
         print(f"Error: {e}")
