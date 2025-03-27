@@ -24,7 +24,7 @@ def lambda_handler(event, context) -> None:
         df_exchange_rate: pl.DataFrame = exchange_rate_fetcher()
 
         # 投資コードとティッカーシンボルを取得
-        df_investment_info: pl.DataFrame = investment_info_fetcher(connection_config)
+        df_investment_info: pl.DataFrame = investment_info_fetcher(conn)
 
         # 投資銘柄のヒストリカルデータを取得
         df_value_pivot: pl.DataFrame

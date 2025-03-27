@@ -1,10 +1,11 @@
 import polars as pl
+import psycopg2._psycopg.connection as psycopg_connection
 
 
-def investment_info_fetcher(connection_config: dict[str, str | None]) -> pl.DataFrame:
+def investment_info_fetcher(conn: psycopg_connection) -> pl.DataFrame:
     try:
         # 銘柄情報を取得
-        select_query: list[str] | str = """
+        select_query: str = """
             SELECT investment_code, ticker_symbol, country_code, currency_code
             FROM public.investment_info
         """
@@ -25,18 +26,17 @@ def investment_info_fetcher(connection_config: dict[str, str | None]) -> pl.Data
         # """
 
         # アメリカのみ
-        select_query = """
-        SELECT investment_code, ticker_symbol, country_code, currency_code
-        FROM public.investment_info
-        WHERE country_code = 'US'
-        ORDER BY investment_info
-        LIMIT 300
-        OFFSET 600
-        """
+        # select_query = """
+        # SELECT investment_code, ticker_symbol, country_code, currency_code
+        # FROM public.investment_info
+        # WHERE country_code = 'US'
+        # ORDER BY investment_info
+        # LIMIT 300
+        # OFFSET 600
+        # """
         # OFFSETを300とすると，301から600までのデータを取得する
 
-        uri: str = f"postgresql://{connection_config['user']}:{connection_config['password']}@{connection_config['host']}:{connection_config['port']}/{connection_config['dbname']}"
-        df_investment_info: pl.DataFrame = pl.read_database_uri(query=select_query, uri=uri)
+        df_investment_info: pl.DataFrame = pl.read_database(select_query, conn)
 
         return df_investment_info
 
