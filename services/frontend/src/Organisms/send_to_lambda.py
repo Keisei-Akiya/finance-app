@@ -4,7 +4,6 @@ import os
 import httpx
 import polars as pl
 import streamlit as st
-from dotenv import load_dotenv
 
 
 def send_to_lambda(df: pl.DataFrame) -> bool:
@@ -19,10 +18,9 @@ def send_to_lambda(df: pl.DataFrame) -> bool:
     """
 
     try:
-        load_dotenv()
-        uri: str | None = os.getenv("API_GATEWAY_URI")
+        uri: str | None = os.getenv("API_GATEWAY_URL")
         if uri is None:
-            st.write("環境変数 API_GATEWAY_URI が設定されていません")
+            st.write("環境変数 API_GATEWAY_URL が設定されていません")
             return False
 
         # polars dataframe to json
